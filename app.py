@@ -8,40 +8,39 @@ def main():
     # File uploader allows user to add their own CSV
     uploaded_file = st.file_uploader("Upload your input CSV file", type=["csv"])
 
-
     if uploaded_file is not None:
-        try:
-            df = load_data(uploaded_file)
-            st.write("Columns in DataFrame after preprocessing:", df.columns.tolist())
+        # Load and preprocess the data
+        df = load_data(uploaded_file)
+        df_preprocessed = preprocess_data(df)
+        
+        # Display the first 5 rows of the DataFrame
+        st.write("First 5 rows of your data:")
+        st.dataframe(df_preprocessed.head())
 
-            df_preprocessed = preprocess_data(df)
+        # Dropdown for selecting the target variable
+        if not df_preprocessed.empty:
+            target_column = st.selectbox("Select the target variable", df_preprocessed.columns)
 
-            
-            # Log column names to check them
-            st.write("Columns in the processed DataFrame:", df_preprocessed.columns.tolist())
+            if st.button("Process Data"):
+                try:
+                    st.write("You selected:", target_column)
 
-            y = df_preprocessed['Risk']  # Ensure 'Risk' is the correct name
-            X = df_preprocessed
-            
-            num_cols = ['Age', 'Credit amount', 'Duration']  # Example numeric columns
-            cat_cols = ['Sex', 'Job', 'Housing', 'Saving accounts', 'Checking account', 'Purpose']  # Example categorical columns
- 
-            # Check if the expected columns are in X
-            expected_columns = set(num_cols + cat_cols)
-            if not expected_columns.issubset(X.columns):
-                missing_cols = expected_columns - set(X.columns)
-                st.error(f"Missing columns: {missing_cols}")
-                return  # Stop further execution
+                    y = df_preprocessed[target_column]
+                    X = df_preprocessed
 
-            col_trans = build_column_transformer(num_cols, cat_cols)
-            transformed_data = col_trans.fit_transform(X, y)
+                    # Assuming 'num_cols' and 'cat_cols' are defined; ensure 'target_column' is not in 'num_cols' or 'cat_cols'
+                    num_cols = [col for col in ['Age', 'Credit amount', 'Duration'] if col != target_column]  # Example numeric columns
+                    cat_cols = [col for col in ['Sex', 'Job', 'Housing', 'Saving accounts', 'Checking account', 'Purpose'] if col != target_column]  # Example categorical columns
 
-            st.write("Data processing successful!")
-            st.dataframe(transformed_data)
+                    # Building and applying column transformer
+                    col_trans = build_column_transformer(num_cols, cat_cols, target_col=target_column)
+                    transformed_data = col_trans.fit_transform(X, y)  # Make sure to pass y here
 
-        except Exception as e:
-            st.error(f"Error processing the data: {e}")
+                    st.write("Data processing successful!")
+                    st.dataframe(transformed_data)  # Assuming transformed_data is a numpy array or DataFrame
 
+                except Exception as e:
+                    st.error(f"Error processing the data: {e}")
 
 if __name__ == "__main__":
     main()
