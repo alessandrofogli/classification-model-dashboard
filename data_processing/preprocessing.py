@@ -1,15 +1,12 @@
+import numpy as np
+import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-
-import numpy as np
-import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import KBinsDiscretizer
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
+
     
 class CategoricalWOETransformer(BaseEstimator, TransformerMixin):
     def __init__(self, target_col):
@@ -108,8 +105,9 @@ def build_column_transformer(num_cols, cat_cols):
     ])
 
     col_trans = ColumnTransformer([
-        ('num_pipeline', num_pipeline, num_cols),
-        ('cat_pipeline', cat_pipeline, cat_cols)
-    ], remainder='drop')
-
+    ('num_pipeline', num_pipeline, num_cols + ['Risk']),
+    ('cat_pipeline', cat_pipeline, cat_cols + ['Risk'])
+    ], remainder='drop',
+    n_jobs=-1)
+    
     return col_trans
