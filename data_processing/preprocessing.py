@@ -67,7 +67,7 @@ def calculate_woe(df, feature_col, target_col):
     group_distribution['woe'].replace({np.inf: 0, -np.inf: 0}, inplace=True)
     
     return group_distribution['woe']
-
+'''
 class DropColumnTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, col_to_drop):
         self.col_to_drop = col_to_drop
@@ -77,6 +77,24 @@ class DropColumnTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         return X.drop(columns=[self.col_to_drop] if isinstance(self.col_to_drop, str) else X.columns[self.col_to_drop])
+'''
+class DropColumnTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, col_to_drop):
+        self.col_to_drop = col_to_drop
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        if isinstance(X, pd.DataFrame):
+            return X.drop(columns=[self.col_to_drop] if isinstance(self.col_to_drop, str) else X.columns[self.col_to_drop])
+        elif isinstance(X, np.ndarray):
+            # Handle ndarray by dropping columns by index
+            if isinstance(self.col_to_drop, str):
+                raise ValueError("Column names can only be used with a pandas DataFrame.")
+            return np.delete(X, self.col_to_drop, axis=1)
+        else:
+            raise TypeError("Input must be a pandas DataFrame or numpy ndarray")
 
 def build_column_transformer(num_cols, cat_cols, target_col):
     """Build a column transformer for numeric and categorical columns with dynamic target."""
