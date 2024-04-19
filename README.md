@@ -59,9 +59,10 @@ classification-model-dashboard/
 │   ├── model_train.py      # Functions to train different machine learning models.
 │   └── model_evaluation.py # Functions to evaluate models and compute metrics.
 │
-├── statistics/
+├── statistics_plots/
 │   ├── __init__.py         # Makes statistics a Python module.
 │   └── descriptive_stats.py# Functions to compute and display descriptive statistics.
+│   └── data_visualization.py# Functions to plot metrics.
 │
 ├── utils/
 │   ├── __init__.py         # Makes utils a Python module.
