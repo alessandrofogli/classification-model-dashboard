@@ -38,7 +38,8 @@ This Streamlit application provides an intuitive dashboard for users to upload a
   ```bash
   pip install -r requirements.txt
 
-streamlit_ml_dashboard/
+```
+classification-model-dashboard/
 │
 ├── app.py                  # Main application file where Streamlit UI components are defined.
 │
@@ -64,4 +65,4 @@ streamlit_ml_dashboard/
 │   └── file_manager.py     # Utility functions for file management like downloading models.
 │
 └── requirements.txt        # File containing all necessary Python packages.
-
+```
