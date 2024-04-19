@@ -9,38 +9,42 @@ def main():
     uploaded_file = st.file_uploader("Upload your input CSV file", type=["csv"])
 
     if uploaded_file is not None:
-        # Load and preprocess the data
         df = load_data(uploaded_file)
-        df_preprocessed = preprocess_data(df)
-        
+
         # Display the first 5 rows of the DataFrame
         st.write("First 5 rows of your data:")
-        st.dataframe(df_preprocessed.head())
+        st.dataframe(df.head())
 
         # Dropdown for selecting the target variable
-        if not df_preprocessed.empty:
-            target_column = st.selectbox("Select the target variable", df_preprocessed.columns)
+        if not df.empty:
+            target_column = st.selectbox("Select the target variable", df.columns)
+            unique_values = df[target_column].dropna().unique()
 
-            if st.button("Process Data"):
-                try:
-                    st.write("You selected:", target_column)
+            # Check if the target is binary (0, 1 only)
+            if set(unique_values) == {0, 1} or set(unique_values) == {1, 0}:
+                if st.button("Process Data with Binary Target"):
+                    process_data(df, target_column)
+            elif len(unique_values) == 2:
+                option = st.selectbox("Select the positive class for conversion", unique_values)
+                if st.button("Convert to Binary and Process"):
+                    df = preprocess_data(df, target_column, option)
+                    st.success(f"Converted {target_column} to binary with '{option}' as positive class (1).")
+                    process_data(df, target_column)
+            else:
+                st.error("The selected target variable does not have enough unique values; please select a different column.")
 
-                    y = df_preprocessed[target_column]
-                    X = df_preprocessed
+def process_data(df, target_column):
+    # Define feature columns dynamically based on the target column
+    feature_columns = [col for col in df.columns if col != target_column]
 
-                    # Assuming 'num_cols' and 'cat_cols' are defined; ensure 'target_column' is not in 'num_cols' or 'cat_cols'
-                    num_cols = [col for col in ['Age', 'Credit amount', 'Duration'] if col != target_column]  # Example numeric columns
-                    cat_cols = [col for col in ['Sex', 'Job', 'Housing', 'Saving accounts', 'Checking account', 'Purpose'] if col != target_column]  # Example categorical columns
+    # Build and apply column transformer
+    col_trans = build_column_transformer(feature_columns, target_column)
+    X = df[feature_columns]
+    y = df[target_column]
+    transformed_data = col_trans.fit_transform(X, y)
 
-                    # Building and applying column transformer
-                    col_trans = build_column_transformer(num_cols, cat_cols, target_col=target_column)
-                    transformed_data = col_trans.fit_transform(X, y)  # Make sure to pass y here
-
-                    st.write("Data processing successful!")
-                    st.dataframe(transformed_data)  # Assuming transformed_data is a numpy array or DataFrame
-
-                except Exception as e:
-                    st.error(f"Error processing the data: {e}")
+    st.write("Data processing successful!")
+    st.dataframe(transformed_data)  # Assuming transformed_data is a numpy array or DataFrame
 
 if __name__ == "__main__":
     main()
