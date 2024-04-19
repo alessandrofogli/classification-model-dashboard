@@ -45,7 +45,7 @@ def process_and_train(df, target_column, categorical_features=[]):
     X = df[num_cols + cat_cols + [target_column]]
     y = df[target_column]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     #transformed_X_train = col_trans.fit_transform(X_train, y_train)
     #transformed_X_test = col_trans.transform(X_test)
 
