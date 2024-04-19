@@ -45,7 +45,9 @@ classification-model-dashboard/
 │
 ├── data_processing/
 │   ├── __init__.py         # Makes data_processing a Python module.
-│   └── data_loader.py      # Contains functions to load and preprocess data.
+│   └── data_loader.py      # Contains functions to load and preprocess the target variable.
+│   └── preprocessing.py    # Contains classes and functions build column transformer for the features.
+|
 │
 ├── features/
 │   ├── __init__.py         # Makes features a Python module.
