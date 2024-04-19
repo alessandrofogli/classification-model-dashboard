@@ -38,8 +38,8 @@ def process_and_train(df, target_column, categorical_features=[]):
     num_cols = [col for col in feature_columns if col not in categorical_features]
     cat_cols = categorical_features
 
-    st.write("Numerical features:", num_cols)
-    st.write("Categorical features:", cat_cols)
+    #st.write("Numerical features:", num_cols)
+    #st.write("Categorical features:", cat_cols)
 
     col_trans = build_column_transformer(num_cols, cat_cols, target_column)
     X = df[num_cols + cat_cols + [target_column]]
@@ -58,9 +58,6 @@ def process_and_train(df, target_column, categorical_features=[]):
     st.write("Evaluation Results:", evaluation_results)
     st.success('Model training complete!')
 
-    #gs = train_model(X_train, y_train, col_trans)
-    #evaluation_results = evaluate_model(gs, X_test, y_test)
-    #st.write("Evaluation Results:", evaluation_results)
     y_scores = gs.predict_proba(X_test)[:,1]
     fig = plot_roc_curve(y_test, y_scores)
     st.pyplot(fig)
