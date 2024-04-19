@@ -18,7 +18,8 @@ This Streamlit application provides an intuitive dashboard for users to upload a
 
 ### 4. Model Training
 - **Description**: Users can train a machine learning model with a simple click of a button.
-- **Models Supported**: Initially, basic models like Linear Regression or Decision Trees. More models can be added later.
+- **Features Transformation**: Binning and WoE (Weight-of-Evidence) is applied. More preprocessing methos can be added later.
+- **Models Supported**: Initially, XGBoost. More models can be added later.
 
 ### 5. Model Evaluation
 - **Description**: After training, the model's performance is evaluated and various metrics are plotted.
