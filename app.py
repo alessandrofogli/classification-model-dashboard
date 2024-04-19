@@ -51,10 +51,16 @@ def process_and_train(df, target_column, categorical_features=[]):
 
     #st.write("Data processing successful!")
     #st.dataframe(transformed_X_train)  # Assuming transformed_data is a numpy array or DataFrame
+    with st.spinner('Training model... Please wait'):
+        gs = train_model(X_train, y_train, col_trans)
+        evaluation_results = evaluate_model(gs, X_test, y_test)
 
-    gs = train_model(X_train, y_train, col_trans)
-    evaluation_results = evaluate_model(gs, X_test, y_test)
     st.write("Evaluation Results:", evaluation_results)
+    st.success('Model training complete!')
+
+    #gs = train_model(X_train, y_train, col_trans)
+    #evaluation_results = evaluate_model(gs, X_test, y_test)
+    #st.write("Evaluation Results:", evaluation_results)
     y_scores = gs.predict_proba(X_test)[:,1]
     fig = plot_roc_curve(y_test, y_scores)
     st.pyplot(fig)
