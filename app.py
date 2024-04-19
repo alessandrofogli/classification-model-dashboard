@@ -21,7 +21,7 @@ def main():
             if set(unique_values) == {0, 1} or set(unique_values) == {1, 0}:
                 process_and_train(df, target_column)
             elif len(unique_values) == 2:
-                option = st.selectbox("Select the positive class for conversion", unique_values)
+                option = st.selectbox("Select the event class for conversion (will be converted to 1)", unique_values)
                 categorical_features = st.multiselect("Select categorical features (excluding target)",
                                                       [col for col in df.columns if col != target_column])
                 if st.button("Convert to Binary and Process"):
@@ -29,7 +29,7 @@ def main():
                     st.success(f"Converted {target_column} to binary with '{option}' as positive class (1).")
                     process_and_train(df, target_column, categorical_features)
             else:
-                st.error("The selected target variable does not have enough unique values; please select a different column.")
+                st.error("The selected target variable has too many unique values; only binary classification is supported; please select a different column.")
 
 def process_and_train(df, target_column, categorical_features=[]):
     feature_columns = [col for col in df.columns if col != target_column]
