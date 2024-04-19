@@ -1,9 +1,11 @@
 import streamlit as st
+from sklearn.model_selection import train_test_split
+
 from data_processing.data_loader import load_data, preprocess_data
 from data_processing.preprocessing import build_column_transformer
 from models.model_train import train_model
 from models.model_evaluation import evaluate_model
-from sklearn.model_selection import train_test_split
+from statistics_plots.data_visualization import plot_roc_curve
 
 def main():
     st.title("Machine Learning Classification Dashboard")
@@ -53,6 +55,9 @@ def process_and_train(df, target_column, categorical_features=[]):
     gs = train_model(X_train, y_train, col_trans)
     evaluation_results = evaluate_model(gs, X_test, y_test)
     st.write("Evaluation Results:", evaluation_results)
+    y_scores = gs.predict_proba(X_test)[:,1]
+    fig = plot_roc_curve(y_test, y_scores)
+    st.pyplot(fig)
 
 if __name__ == "__main__":
     main()
