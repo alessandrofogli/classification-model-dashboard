@@ -36,4 +36,32 @@ This Streamlit application provides an intuitive dashboard for users to upload a
 - **Requirements**: Python 3.8+, Streamlit, Pandas, Scikit-learn, Matplotlib, Seaborn.
 - **Installation**:
   ```bash
-  pip install streamlit pandas scikit-learn matplotlib seaborn
+  pip install -r requirements.txt
+
+streamlit_ml_dashboard/
+│
+├── app.py                  # Main application file where Streamlit UI components are defined.
+│
+├── data_processing/
+│   ├── __init__.py         # Makes data_processing a Python module.
+│   └── data_loader.py      # Contains functions to load and preprocess data.
+│
+├── features/
+│   ├── __init__.py         # Makes features a Python module.
+│   └── feature_selector.py # Functions for selecting features and target from the dataset.
+│
+├── models/
+│   ├── __init__.py         # Makes models a Python module.
+│   ├── model_train.py      # Functions to train different machine learning models.
+│   └── model_evaluation.py # Functions to evaluate models and compute metrics.
+│
+├── statistics/
+│   ├── __init__.py         # Makes statistics a Python module.
+│   └── descriptive_stats.py# Functions to compute and display descriptive statistics.
+│
+├── utils/
+│   ├── __init__.py         # Makes utils a Python module.
+│   └── file_manager.py     # Utility functions for file management like downloading models.
+│
+└── requirements.txt        # File containing all necessary Python packages.
+
