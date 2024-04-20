@@ -2,6 +2,14 @@
 
 This Streamlit application provides an intuitive dashboard for users to upload a dataset, select a target feature, train a machine learning model, evaluate its performance, and download the trained model for further use. It's designed to facilitate quick and efficient data-driven decision-making without requiring deep programming expertise.
 
+You can test the app here:
+
+<p align="left">
+  <a href="link">
+    <img src="https://img.shields.io/badge/Open%20in-Streamlit-ff4b4b?style=for-the-badge&logo=streamlit&logoColor=white" alt="Open in Streamlit"/>
+  </a>
+</p>
+
 ## Features
 
 ### 1. Data Upload
@@ -70,11 +78,3 @@ classification-model-dashboard/
 │
 └── requirements.txt        # File containing all necessary Python packages.
 ```
-
-You can test the app here:
-
-<p align="left">
-  <a href="link">
-    <img src="https://img.shields.io/badge/Open%20in-Streamlit-ff4b4b?style=for-the-badge&logo=streamlit&logoColor=white" alt="Open in Streamlit"/>
-  </a>
-</p>
