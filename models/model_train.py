@@ -22,7 +22,7 @@ def train_model(X_train, y_train, col_trans):
     - gs: A trained GridSearchCV object
     """
 
-    clf = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=0)
+    clf = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=0, n_jobs=1)
 
     clf_pipeline = Pipeline(steps=[
     ('col_trans', col_trans),
