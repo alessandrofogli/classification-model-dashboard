@@ -70,3 +70,11 @@ classification-model-dashboard/
 │
 └── requirements.txt        # File containing all necessary Python packages.
 ```
+
+You can test the app here:
+
+<p align="left">
+  <a href="link">
+    <img src="https://img.shields.io/badge/Open%20in-Streamlit-ff4b4b?style=for-the-badge&logo=streamlit&logoColor=white" alt="Open in Streamlit"/>
+  </a>
+</p>
