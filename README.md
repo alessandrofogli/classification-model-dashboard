@@ -66,6 +66,7 @@ classification-model-dashboard/
 │   ├── __init__.py         # Makes models a Python module.
 │   ├── model_train.py      # Functions to train different machine learning models.
 │   └── model_evaluation.py # Functions to evaluate models and compute metrics.
+│   └── model_utils.py      # Functions to save and download the trained model.
 │
 ├── statistics_plots/
 │   ├── __init__.py         # Makes statistics a Python module.
