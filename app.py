@@ -53,7 +53,7 @@ def process_and_train(df, target_column, categorical_features=[]):
     #st.dataframe(transformed_X_train)  # Assuming transformed_data is a numpy array or DataFrame
     with st.spinner('Training model... Please wait'):
         gs = train_model(X_train, y_train, col_trans)
-        evaluation_results = evaluate_model(gs, X_test, y_test)
+        evaluation_results = evaluate_model(gs, X_train, X_test, y_train, y_test)
 
     st.write("Evaluation Results:", evaluation_results)
     st.success('Model training complete!')

@@ -1,4 +1,6 @@
-def evaluate_model(gs, X_test, y_test):
+from sklearn.metrics import roc_auc_score
+
+def evaluate_model(gs, X_train, X_test, y_train, y_test):
     """
     Evaluate the trained model on both training and test datasets.
 
@@ -10,13 +12,11 @@ def evaluate_model(gs, X_test, y_test):
     Returns:
     - evaluation_results: A dictionary containing scores and the best parameters
     """
-    train_score = gs.best_score_
-    test_score = gs.score(X_test, y_test)
-    best_params = gs.best_params_
+    train_score = roc_auc_score(y_train, gs.predict_proba(X_train)[:, 1])
+    test_score = roc_auc_score(y_test, gs.predict_proba(X_test)[:, 1])
 
     evaluation_results = {
         "Best Score of train set": train_score,
-        "Best parameter set": best_params,
         "Test Score": test_score
     }
 
