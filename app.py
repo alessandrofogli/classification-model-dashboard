@@ -1,15 +1,17 @@
 import streamlit as st
 from sklearn.model_selection import train_test_split
 import logging
-
+import sys
 
 from data_processing.data_loader import load_data, preprocess_data
 from data_processing.preprocessing import build_column_transformer
 from models.model_train import train_model
 from models.model_evaluation import evaluate_model
+from models.model_utils import save_model
 from statistics_plots.data_visualization import plot_roc_curve
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def main():
     st.title("Machine Learning Classification Dashboard")
@@ -79,6 +81,8 @@ def process_and_train(df, target_column, categorical_features=[]):
     fig = plot_roc_curve(y_test, y_scores)
     st.pyplot(fig)
     logging.info("ROC curve plotted successfully.")
+    save_model(gs.best_estimator_, 'trained_model.pkl')
+    logging.info("Trained model saved successfully.")
 
 
 if __name__ == "__main__":
