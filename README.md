@@ -56,7 +56,9 @@ classification-model-dashboard/
 │   ├── __init__.py         # Makes data_processing a Python module.
 │   └── data_loader.py      # Contains functions to load and preprocess the target variable.
 │   └── preprocessing.py    # Contains classes and functions build column transformer for the features.
-|
+│
+├── data/
+|   └── german_credit_data.csv # Sample data for testing purposes.
 │
 ├── features/
 │   ├── __init__.py         # Makes features a Python module.
@@ -69,9 +71,9 @@ classification-model-dashboard/
 │   └── model_utils.py      # Functions to save and download the trained model.
 │
 ├── statistics_plots/
-│   ├── __init__.py         # Makes statistics a Python module.
-│   └── descriptive_stats.py# Functions to compute and display descriptive statistics.
-│   └── data_visualization.py# Functions to plot metrics.
+│   ├── __init__.py           # Makes statistics a Python module.
+│   └── descriptive_stats.py  # Functions to compute and display descriptive statistics.
+│   └── data_visualization.py # Functions to plot metrics.
 │
 ├── utils/
 │   ├── __init__.py         # Makes utils a Python module.
