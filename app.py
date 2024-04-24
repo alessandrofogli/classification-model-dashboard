@@ -2,6 +2,7 @@ import streamlit as st
 from sklearn.model_selection import train_test_split
 import logging
 import sys
+import os
 
 from data_processing.data_loader import load_data, preprocess_data
 from data_processing.preprocessing import build_column_transformer
@@ -12,32 +13,33 @@ from statistics_plots.data_visualization import plot_roc_curve
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def main():
-    st.sidebar.title("Machine Learning Dashboard")
-    app_mode = st.sidebar.radio("Choose the stage",
-                                ["Upload Data", "Feature Engineering", "Model Training and Evaluation", "Model Download"])
-
-    if app_mode == "Upload Data":
-        upload_data()
-    elif app_mode == "Feature Engineering":
-        feature_engineering()
-    elif app_mode == "Model Training and Evaluation":
-        model_training()
-    elif app_mode == "Model Download":
-        model_download()
 
 def upload_data():
     st.title("Upload your CSV data")
-    uploaded_file = st.file_uploader("Upload your input CSV file", type=["csv"])
+    
+    # Provide a button to load the sample data
+    if st.button('Load Sample Data'):
+        # Assuming the data folder is in the same directory as your app.py
+        sample_data_path = os.path.join('data', 'german_credit_data.csv')
+        df = load_data(sample_data_path)
+        st.session_state['df'] = df
+        st.write("Sample data loaded. First 5 rows of the sample data:")
+        st.dataframe(df.head())
+    
+    # Allow user to upload their own file
+    uploaded_file = st.file_uploader("Or upload your input CSV file", type=["csv"])
     if uploaded_file is not None:
         df = load_data(uploaded_file)
-        st.write("First 5 rows of your data:")
-        st.dataframe(df.head())
         st.session_state['df'] = df
+        st.write("Uploaded data. First 5 rows of your data:")
+        st.dataframe(df.head())
+
+    # Ensure there's a way to proceed
+    if 'df' in st.session_state and not st.session_state['df'].empty:
         if st.button("Next"):
             st.session_state['current_stage'] = "Feature Engineering"
-            # Trigger a rerun to update the sidebar and content
-            st.rerun()
+            st.experimental_rerun()
+
 
 def feature_engineering():
     st.title("Feature Engineering")
