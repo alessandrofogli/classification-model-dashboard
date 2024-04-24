@@ -4,7 +4,6 @@ from xgboost import XGBClassifier
 from sklearn.pipeline import Pipeline
 from xgboost import XGBClassifier
 
-from data_processing.preprocessing import build_column_transformer
 from data_processing.preprocessing import DropColumnTransformer
 
 
