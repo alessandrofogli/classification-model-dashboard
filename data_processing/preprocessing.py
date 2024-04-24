@@ -96,7 +96,7 @@ class DropColumnTransformer(BaseEstimator, TransformerMixin):
         else:
             raise TypeError("Input must be a pandas DataFrame or numpy ndarray")
 
-def build_column_transformer(num_cols, cat_cols, target_col):
+def build_column_transformer_woe(num_cols, cat_cols, target_col):
     """Build a column transformer for numeric and categorical columns with dynamic target."""
 
     num_pipeline = Pipeline([
@@ -112,4 +112,22 @@ def build_column_transformer(num_cols, cat_cols, target_col):
         ('cat_pipeline', cat_pipeline, cat_cols + [target_col])
     ], remainder='drop', n_jobs=-1)
     
+    return col_trans
+
+def build_column_transformer(num_cols, cat_cols):
+    num_pipeline = Pipeline(steps=[
+        ('impute', SimpleImputer(strategy='mean')),
+        ('scale',StandardScaler())
+    ])
+    cat_pipeline = Pipeline(steps=[
+        ('impute', SimpleImputer(strategy='most_frequent')),
+        ('one-hot',OneHotEncoder(handle_unknown='ignore', sparse=False))
+    ])
+
+    col_trans = ColumnTransformer(transformers=[
+        ('num_pipeline',num_pipeline,num_cols),
+        ('cat_pipeline',cat_pipeline,cat_cols)
+        ],
+        remainder='drop',
+        n_jobs=-1)
     return col_trans
