@@ -53,13 +53,13 @@ def feature_engineering():
     st.title("Feature Engineering")
     df = st.session_state.get('df', None)
     if df is not None:
-        target_column = st.selectbox("Select the target variable", df.columns)
+        target_column = st.selectbox("Select the target variable (If you loaded the data sample use 'Risk')", df.columns)
         unique_values = df[target_column].dropna().unique()
         logging.info(f"Unique values in target column: {unique_values}")
 
         if len(unique_values) == 2:
-            option = st.selectbox("Select the event class for conversion (will be converted to 1)", unique_values)
-            categorical_features = st.multiselect("Select categorical features (excluding target)",
+            option = st.selectbox("Select the event class for conversion (will be converted to 1 --> If you loaded the data sample use 'Bad')", unique_values)
+            categorical_features = st.multiselect("Select categorical features (If you loaded the data sample select:  Sex, Job, Housing, Saving accounts, Checking account, Purpose)",
                                                   [col for col in df.columns if col != target_column])
             
             # Allow user to select the preprocessing method
