@@ -5,7 +5,7 @@ import sys
 import os
 
 from data_processing.data_loader import load_data, preprocess_data
-from data_processing.preprocessing import build_column_transformer
+from data_processing.preprocessing import build_column_transformer_woe, build_column_transformer
 from models.model_train import train_model
 from models.model_evaluation import evaluate_model
 from models.model_utils import save_model
@@ -25,6 +25,7 @@ def upload_data():
         st.session_state['df'] = df
         st.write("Sample data loaded. First 5 rows of the sample data:")
         st.dataframe(df.head())
+        reset_model_state()
     
     # Allow user to upload their own file
     uploaded_file = st.file_uploader("Or upload your input CSV file", type=["csv"])
@@ -33,6 +34,7 @@ def upload_data():
         st.session_state['df'] = df
         st.write("Uploaded data. First 5 rows of your data:")
         st.dataframe(df.head())
+        reset_model_state()
 
     # Ensure there's a way to proceed
     if 'df' in st.session_state and not st.session_state['df'].empty:
@@ -40,6 +42,12 @@ def upload_data():
             st.session_state['current_stage'] = "Feature Engineering"
             st.experimental_rerun()
 
+def reset_model_state():
+    # Resets the training related states
+    if 'model_trained' in st.session_state:
+        del st.session_state['model_trained']
+    if 'model' in st.session_state:
+        del st.session_state['model']
 
 def feature_engineering():
     st.title("Feature Engineering")
@@ -53,6 +61,12 @@ def feature_engineering():
             option = st.selectbox("Select the event class for conversion (will be converted to 1)", unique_values)
             categorical_features = st.multiselect("Select categorical features (excluding target)",
                                                   [col for col in df.columns if col != target_column])
+            
+            # Allow user to select the preprocessing method
+            preprocessing_method = st.selectbox("Select preprocessing method:",
+                                                ["WoE", "StandardScaler + OneHotEncoding"])
+            st.session_state['preprocessing_method'] = preprocessing_method
+
             if st.button("Convert to Binary and Process"):
                 df = preprocess_data(df, target_column, option)
                 st.session_state['df'] = df
@@ -98,9 +112,14 @@ def process_and_train(df, target_column, categorical_features=[]):
     num_cols = [col for col in feature_columns if col not in categorical_features]
     cat_cols = categorical_features
 
-    # Build column transformer and split data
-    col_trans = build_column_transformer(num_cols, cat_cols, target_column)
-    X = df[num_cols + cat_cols + [target_column]]
+    # Select the column transformer based on user choice
+    if st.session_state['preprocessing_method'] == "WoE":
+        col_trans = build_column_transformer_woe(num_cols, cat_cols, target_column)
+    else:
+        col_trans = build_column_transformer(num_cols, cat_cols)
+    
+    # Split data
+    X = df[num_cols + cat_cols + ([target_column] if st.session_state['preprocessing_method'] == "WoE" else [])]
     y = df[target_column]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     
@@ -112,14 +131,17 @@ def process_and_train(df, target_column, categorical_features=[]):
             evaluation_results = evaluate_model(gs, X_test, y_test)
             st.session_state['model'] = gs.best_estimator_
             st.session_state['model_trained'] = True
-            st.write("Evaluation Results:", evaluation_results)
-            st.success('Model training complete!')
+            if evaluation_results:
+                st.write("Evaluation Results:", evaluation_results)
+                st.success('Model training complete!')
+                logging.info("Model trained successfully.")
+            else:
+                st.error("Failed to compute evaluation metrics.")
             logging.info("Model trained successfully.")
         except Exception as e:
-            st.error("An error occurred during model training.")
+            st.error("An error occurred during model training: " + str(e))
             logging.error("Error during model training: ", exc_info=True)
             st.session_state['model_trained'] = False
-            return
 
     # Plot ROC curve if model training is successful
     y_scores = gs.predict_proba(X_test)[:, 1]
